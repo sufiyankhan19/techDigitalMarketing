@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commerce & Tech Digital Marketing</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>  
+    <div class="sidebar" id="loginSidebar">
+        <button class="close-btn" onclick="closeSidebar()">&times;</button>
+        <h2>Login</h2>
+        <form action="/login" method="POST" autocomplete="off">
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 .55.571 0H15.43l.57.55v9.9l-.571.55H.57L0 10.45zm1.143 1.138V9.9h13.714V1.69l-6.503 4.8h-.697zM13.749 1.1H2.25L8 5.356z" fill="#6B7280"/>
+      </svg>
+            <input type="text" name="username" placeholder="Email" required>
+            <svg width="13" height="17" viewBox="0 0 13 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 8.5c0-.938-.729-1.7-1.625-1.7h-.812V4.25C10.563 1.907 8.74 0 6.5 0S2.438 1.907 2.438 4.25V6.8h-.813C.729 6.8 0 7.562 0 8.5v6.8c0 .938.729 1.7 1.625 1.7h9.75c.896 0 1.625-.762 1.625-1.7zM4.063 4.25c0-1.406 1.093-2.55 2.437-2.55s2.438 1.144 2.438 2.55V6.8H4.061z" fill="#6B7280"/>
+      </svg>
+            <input type="password" name="password" placeholder="Password" required>
+            <a href="forgotpassword.html">Forgot password?</a>
+            <button type="submit">Sign In</button>
+        </form>
+        <p style="font-size:0.95rem; margin-top:1rem;">Don't have an account? <a href="signup.html">Register</a></p>
+    </div>
+    <header>
+        <div class="auth-buttons">
+    <button class="login-toggle-btn" onclick="openSidebar()">Login</button>
+</div>
+    <section class="home" id="home"></section>
+        <h1>Commerce & Tech Digital Marketing</h1>
+        <p>Your partner in digital growth for commerce and technology businesses</p>
+    </header>
+    <nav>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>  
+    </nav>
+    <section class="hero">
+        <h1>Grow Your Business Online</h1>
+        <p>We help commerce and tech companies reach their audience, boost sales, and build a powerful digital presence.</p>
+        <a href="/chatbot" class="cta-btn">Talk with Bot</a>
+    </section>
+    <section class="services" id="services">
+        <div class="service-card"><a href="SEO_Optimization.html" style="text-decoration: none;">
+            <h3>SEO Optimization</h3>
+            <p>Improve your website ranking and visibility with our advanced SEO strategies tailored for commerce and tech.</p></a>
+        </div>
+        <div class="service-card"><a href="Social_Media_Marketing.html" style="text-decoration: none;">
+            <h3>Social Media Marketing</h3>
+            <p>Engage your audience and grow your brand with targeted campaigns on all major social platforms.</p></a>
+        </div>
+        <div class="service-card"><a href="Content_Creation.html" style="text-decoration: none;">
+            <h3>Content Creation</h3>
+            <p>High-quality content that drives traffic, builds trust, and converts visitors into customers.</p></a>
+        </div>
+        <div class="service-card"><a href="Paid_Advertising.html" style="text-decoration: none;">
+            <h3>Paid Advertising</h3>
+            <p>Maximize ROI with data-driven PPC and display ad campaigns for commerce and tech products.</p></a>
+        </div>
+    </section>
+    <section class="about" id="about">
+         <h2>About Us</h2>
+        <section class="section">
+    <div class="image-box">
+      <img class="image" src="https://images.unsplash.com/photo-1531497865144-0464ef8fb9a9?q=80&w=451&h=451&auto=format&fit=crop" alt="">
+    </div>
+    <div class="content">
+      <h1>What we do?</h1>
+      <div class="underline"></div>
+      <p class="mt-8">We are a team of digital marketing experts specializing in commerce and technology sectors. Our mission is to empower businesses with innovative marketing 
+        solutions that drive measurable results and sustainable growth.</p>
+      <button class="read-more">
+        <a href="about-detail.html"><span>Read more</span></a>
+        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.53 6.53a.75.75 0 0 0 0-1.06L7.757.697a.75.75 0 1 0-1.06 1.06L10.939 6l-4.242 4.243a.75.75 0 0 0 1.06 1.06zM0 6v.75h12v-1.5H0z" fill="#fff"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+    </section>
+    <section class="contact" id="contact">
+        <h2>Contact Us</h2>
+        <p>
+            Ready to take your business to the next level? Reach out for a free consultation!
+        </p>
+        <form action="/contacts" method="POST">
+            <input type="text" name="name" placeholder="Your Name" required style="padding:0.5rem; margin:0.5rem 0; width:100%; max-width:400px;"><br>
+            <input type="email" name="email" placeholder="Your Email" required style="padding:0.5rem; margin:0.5rem 0; width:100%; max-width:400px;"><br>
+            <textarea name="message" placeholder="Your Message" required style="padding:0.5rem; margin:0.5rem 0; width:100%; max-width:400px; height:100px;"></textarea><br>
+            <button type="submit" class="cta-btn">Send Message</button>
+        </form>
+    </section>
+    <footer>
+        <h3>Quick Links</h3>
+        <ul class="quick-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="index.html"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="https://instagram.com/team_ecommerce_1928?igsh=cG1iam5uZTkxOGty" target="_blank" rel="noopener"><i class="fab fa-instagram"></i> Instagram</a></li>
+            <li><a href="https://facebook.com/" target="_blank" rel="noopener"><i class="fab fa-facebook"></i> Facebook</a></li>
+            <li><a href="CTA.html"><i class="fas fa-briefcase"></i> Services</a></li>
+        </ul>
+    </footer>
+    <div class="profile-sidebar" id="profile-sidebar">
+  <div class="sidebar-header">
+    <h3>Profile</h3>
+    <button id="close-sidebar">&times;</button>
+  </div>
+  <div class="profile-info">
+    <p><strong>Name:</strong> <span id="profile-name">Loading...</span></p>
+    <p><strong>Email:</strong> <span id="profile-email">Loading...</span></p>
+  </div>
+  <button id="logout-btn">Logout</button>
+</div>
+<div class="profile-icon" id="profile-icon" title="User Profile">Profile</div>
+    <script>
+        // Sidebar open/close logic
+        function openSidebar() {
+            document.getElementById('loginSidebar').classList.add('open');
+        }
+        function closeSidebar() {
+            document.getElementById('loginSidebar').classList.remove('open');
+        }
+        window.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('loginSidebar');
+            if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !e.target.classList.contains('login-toggle-btn')) {
+                closeSidebar();
+            }
+        });
+        // Profile sidebar logic
+        const profileIcon = document.getElementById('profile-icon');
+const sidebar = document.getElementById('profile-sidebar');
+const closeBtn = document.getElementById('close-sidebar');
+const logoutBtn = document.getElementById('logout-btn');
+profileIcon.addEventListener('click', () => {
+  sidebar.classList.add('open');
+  // Load user info when sidebar opens
+  fetch('/api/profile')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('profile-name').textContent = data.fullname;
+      document.getElementById('profile-email').textContent = data.email;
+    })
+    .catch(() => {
+      document.getElementById('profile-name').textContent = 'Error loading';
+      document.getElementById('profile-email').textContent = 'Error loading';
+    });
+});
+closeBtn.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+});
+//logout button logic
+logoutBtn.addEventListener('click', () => {
+  fetch('/logout')
+    .then(response => {
+      if (response.ok) {
+        window.location.href = '/';
+      } else {
+        alert('Logout failed.');
+      }
+    }).catch(() => {
+      alert('Logout failed.');
+    });
+});
+window.addEventListener('DOMContentLoaded', () => {
+  fetch('/api/isloggedin')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.loggedIn) {
+        profileIcon.style.display = 'none';
+      }
+    });
+});
+//hide login button if user is logged in
+window.addEventListener('DOMContentLoaded', () => {
+  fetch('/api/isloggedin')
+    .then(res => res.json())
+    .then(data => {
+      const profileIcon = document.getElementById('profile-icon');
+      const loginBtn = document.querySelector('.login-toggle-btn');
+      if (data.loggedIn) {
+        if (profileIcon) profileIcon.style.display = 'inline-block';
+        if (loginBtn) loginBtn.style.display = 'none';
+      } else {
+        if (profileIcon) profileIcon.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'inline-block';
+      }
+    })
+    .catch(() => {
+      const profileIcon = document.getElementById('profile-icon');
+      const loginBtn = document.querySelector('.login-toggle-btn');
+      if (profileIcon) profileIcon.style.display = 'none';
+      if (loginBtn) loginBtn.style.display = 'inline-block';
+    });
+});
+        // data inserted success message
+        const urlParams =new 
+        URLSearchParams(window.location.search);
+        if(urlParams.get('success')==='1'){
+            const msgBox = document.createElement('div');
+            msgBox.textContent = "Your Message has been submitted succesfully!";
+            msgBox.style.backgroundColor="#d4edda";
+            msgBox.style.color ="#155724";
+            msgBox.style.padding= "10px";
+            msgBox.style.marginBottom="15px";
+            msgBox.style.border="1px solid #c3e6cb";
+            msgBox.style.borderRadius="5px";
+            msgBox.style.fontSize="1.5rem";
+            document.body.prepend(msgBox);
+            setTimeout(()=>{
+                msgBox.remove();
+                window.history.replaceState({},document.title,"/");
+            },3000);
+        }
+        //registration success message
+        if(urlParams.get('registered')==='1'){
+            const msgBox = document.createElement('div');
+            msgBox.textContent = "Your account has been created successfully! Please login to continue!.";
+            msgBox.style.backgroundColor="#d1ecf1";
+            msgBox.style.color ="#0c5460";
+            msgBox.style.padding= "10px";
+            msgBox.style.marginBottom="15px";
+            msgBox.style.border="1px solid #bee5eb";
+            msgBox.style.borderRadius="5px";
+            msgBox.style.fontSize="1.5rem";
+            document.body.prepend(msgBox);
+            setTimeout(()=>{
+                msgBox.remove();
+                window.history.replaceState({},document.title,"/");
+            },7000);
+        }
+        //login success message
+        if(urlParams.get('loggedin')==='1'){
+            const msgBox = document.createElement('div');
+            msgBox.textContent = "You are now logged in!";
+            msgBox.style.backgroundColor="#d1ecf1";
+            msgBox.style.color ="#0c5460";
+            msgBox.style.padding= "10px";
+            msgBox.style.marginBottom="15px";
+            msgBox.style.border="1px solid #bee5eb";
+            msgBox.style.borderRadius="5px";
+            msgBox.style.fontSize="1.5rem";
+            document.body.prepend(msgBox);
+            setTimeout(()=>{
+                msgBox.remove();
+                window.history.replaceState({},document.title,"/");
+            },5000);
+        }
+        //message failed 
+        if(urlParams.get('failed')==='1'){
+            const msgBox = document.createElement('div');
+            msgBox.textContent = "Failed Sending message.You need to login first!";
+            msgBox.style.backgroundColor="#f8d7da";
+            msgBox.style.color ="#721c24";
+            msgBox.style.padding= "10px";
+            msgBox.style.marginBottom="15px";
+            msgBox.style.border="1px solid #bee5eb";
+            msgBox.style.borderRadius="5px";
+            msgBox.style.fontSize="1.5rem";
+            document.body.prepend(msgBox);
+            setTimeout(()=>{
+                msgBox.remove();
+                window.history.replaceState({},document.title,"/");
+            },5000);
+        }
+        //ager login kare bina button pe click karoge toh error
+        if(urlParams.get('boterror')==='1'){
+            const msgBox = document.createElement('div');
+            msgBox.textContent = "You need to login first to talk with the bot!";
+            msgBox.style.backgroundColor="#f8d7da";
+            msgBox.style.color ="#721c24";
+            msgBox.style.padding= "10px";
+            msgBox.style.marginBottom="15px";
+            msgBox.style.border="1px solid #bee5eb";
+            msgBox.style.borderRadius="5px";
+            msgBox.style.fontSize="1.5rem";
+            document.body.prepend(msgBox);
+            setTimeout(()=>{
+                msgBox.remove();
+                window.history.replaceState({},document.title,"/");
+            },5000);
+        }
+        //email error
+        if(urlParams.get('emailerror')==='1'){
+            const msgBox = document.createElement('div');
+            msgBox.textContent = "Failed Sending message. An Error has occured from our side";
+            msgBox.style.backgroundColor="#f8d7da";
+            msgBox.style.color ="#721c24";
+            msgBox.style.padding= "10px";
+            msgBox.style.marginBottom="15px";
+            msgBox.style.border="1px solid #bee5eb";
+            msgBox.style.borderRadius="5px";
+            msgBox.style.fontSize="1.5rem";
+            document.body.prepend(msgBox);
+            setTimeout(()=>{
+                msgBox.remove();
+                window.history.replaceState({},document.title,"/");
+            },5000);
+        }
+        //login error
+        if(urlParams.get('loginerror')==='1'){
+            const msgBox = document.createElement('div');
+            msgBox.textContent = "Cannot find registered user. Check if you have entered valid credentials or not! Or register first if you have not!";
+            msgBox.style.backgroundColor="#f8d7da";
+            msgBox.style.color ="#721c24";
+            msgBox.style.padding= "10px";
+            msgBox.style.marginBottom="15px";
+            msgBox.style.border="1px solid #bee5eb";
+            msgBox.style.borderRadius="5px";
+            msgBox.style.fontSize="1.5rem";
+            document.body.prepend(msgBox);
+            setTimeout(()=>{
+                msgBox.remove();
+                window.history.replaceState({},document.title,"/");
+            },6000);
+        }
+function logoutUser() {
+  console.log('Logout button clicked');
+  fetch('/logout')
+    .then(response => {
+      console.log('Response received', response);
+      if (response.ok) {
+        alert('Logout successful');
+        window.location.href = "/";
+      } else {
+        alert('Logout failed. Please try again.');
+      }
+    })
+    .catch(() => {
+      alert('Logout failed. Please check your connection.');
+    });
+}
+</script>
+</body>
+</html>
