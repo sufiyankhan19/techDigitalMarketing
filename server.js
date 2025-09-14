@@ -10,17 +10,19 @@ const app = express();
 const port = 3000;
 // Middleware
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));   
+
 app.use(bodyParser.json());
 app.use(express.static('public'));
 // PostgreSQL setup
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'Digital-Marketing',
-  password: 'admin@1234',
-  port: 5432,
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT,
 });
+
 // Session setup
 app.use(
   session({
