@@ -8,8 +8,27 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 const app = express();
 const port = 3000;
-const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
+const fetch = require('node-fetch');
+
+async function sendEmailResend({ to, subject, html, text }) {
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'digitalmarketingecommerce662@gmail.com', 
+      to,
+      subject,
+      html,
+      text,
+    }),
+  });
+  const data = await response.json();
+  return data;
+}
+
 
 // Middleware
 app.use(cors());
@@ -120,18 +139,19 @@ app.post('/contacts', async (req, res) => {
     // Insert message into DB
     await pool.query('INSERT INTO contact_messages (name, email, message) VALUES ($1, $2, $3)', [name, email, message]);
     // Send confirmation email
-    await resend.emails.send({
-    from: 'Tech Digital Marketing <digitalmarketingecommerce662@gmail.com>',
-    to: email,
-    subject: 'Message Received - We Will Contact You Soon',
-    html: `
-      <p>Hi ${name},</p>
-      <p>Thank you for reaching out! We've received your message:</p>
-      <blockquote>${message}</blockquote>
-      <p>We will contact you soon.</p>
-      <br><p>Best regards,<br>Tech Digital Marketing</p>
-    `,
-  });
+    await sendEmailResend({
+  to: email,
+  subject: 'Message Received - We Will Contact You Soon',
+  html: `
+    <p>Hi ${name},</p>
+    <p>Thank you for reaching out! We've received your message:</p>
+    <blockquote>${message}</blockquote>
+    <p>We will contact you soon.</p>
+    <br><p>Best regards,<br>Tech Digital Marketing</p>
+  `,
+  text: `Hi ${name},\n\nThank you for reaching out! We've received your message. We will contact you soon.`,
+});
+
   return res.redirect('/?success=1');
   } catch (err) {
     console.error('Contact error:', err);
@@ -146,12 +166,12 @@ app.post('/api/send-otp', async (req, res) => {
   req.session.otpEmail = email;
 
   try {
-    await resend.emails.send({
-      from: 'Tech Digital Marketing <digitalmarketingecommerce662@gmail.com>',
-      to: email,
-      subject: 'Password Reset OTP',
-      text: `Your OTP for password reset is: ${otp}`,
-    });
+    await sendEmailResend({
+  to: email,
+  subject: 'Password Reset OTP',
+  text: `Your OTP for password reset is: ${otp}`,
+});
+
     res.json({ message: 'OTP sent to your email.' });
   } catch (err) {
     console.error('OTP mail error:', err);
