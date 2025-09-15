@@ -6,11 +6,19 @@ const axios = require('axios');
 const session = require('express-session');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
+
 const app = express();
 const port = 3000;
-const fetch = require('node-fetch');
+
+let fetch;
+(async () => {
+  fetch = (await import('node-fetch')).default;
+})();
 
 async function sendEmailResend({ to, subject, html, text }) {
+  if (!fetch) {
+    fetch = (await import('node-fetch')).default;
+  }
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -18,7 +26,7 @@ async function sendEmailResend({ to, subject, html, text }) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'digitalmarketingecommerce662@gmail.com', 
+      from: 'digitalmarketingecommerce662@gmail.com',
       to,
       subject,
       html,
@@ -29,13 +37,12 @@ async function sendEmailResend({ to, subject, html, text }) {
   return data;
 }
 
-
 // Middleware
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));   
-
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
+
 // PostgreSQL setup
 const pool = new Pool({
   user: process.env.PGUSER,
@@ -52,10 +59,11 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, 
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     },
   })
 );
+
 function ensureLoggedIn(req, res, next) {
   if (req.session && req.session.userId) {
     return next();
@@ -63,6 +71,7 @@ function ensureLoggedIn(req, res, next) {
     return res.redirect('/?boterror=1');
   }
 }
+
 // Route: Signup
 app.post('/signup', async (req, res) => {
   const { fullname, email, company, password } = req.body;
@@ -81,10 +90,11 @@ app.post('/signup', async (req, res) => {
     );
     res.redirect('/?registered=1');
   } catch (err) {
-    console.error("Signup Error:", err);
+    console.error('Signup Error:', err);
     res.status(500).send('Registration failed. Please try again.');
   }
 });
+
 // Route: Login
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -98,17 +108,17 @@ app.post('/login', async (req, res) => {
     if (result.rows.length === 0) {
       return res.redirect('/?loginerror=1');
     }
-   // After successful login check
-const passwordHash = result.rows[0].password_hash;
-await pool.query(
-  `INSERT INTO loggedusers (email, password_hash, login_time)
-   VALUES ($1, $2, CURRENT_TIMESTAMP)
-   ON CONFLICT (email) DO UPDATE SET 
-   password_hash = EXCLUDED.password_hash, login_time = EXCLUDED.login_time`,
-  [username, passwordHash]
-);
-  // Store session info
-    req.session.userId = result.rows[0].email; 
+    // After successful login check
+    const passwordHash = result.rows[0].password_hash;
+    await pool.query(
+      `INSERT INTO loggedusers (email, password_hash, login_time)
+       VALUES ($1, $2, CURRENT_TIMESTAMP)
+       ON CONFLICT (email) DO UPDATE SET 
+       password_hash = EXCLUDED.password_hash, login_time = EXCLUDED.login_time`,
+      [username, passwordHash]
+    );
+    // Store session info
+    req.session.userId = result.rows[0].email;
     req.session.user = {
       email: result.rows[0].email,
       fullname: result.rows[0].fullname,
@@ -119,14 +129,7 @@ await pool.query(
     res.status(500).send('Server error');
   }
 });
-// Configure Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'digitalmarketingecommerce662@gmail.com',
-    pass: 'fruvskkknluogohk'
-  }
-});
+
 // Route: Contact Form
 app.post('/contacts', async (req, res) => {
   const { name, email, message } = req.body;
@@ -134,30 +137,32 @@ app.post('/contacts', async (req, res) => {
     // Check if user exists
     const userExists = await pool.query('SELECT email FROM loggedusers WHERE email = $1', [email]);
     if (userExists.rows.length === 0) {
-      return res.redirect('/?failed=1'); 
+      return res.redirect('/?failed=1');
     }
     // Insert message into DB
     await pool.query('INSERT INTO contact_messages (name, email, message) VALUES ($1, $2, $3)', [name, email, message]);
-    // Send confirmation email
-    await sendEmailResend({
-  to: email,
-  subject: 'Message Received - We Will Contact You Soon',
-  html: `
-    <p>Hi ${name},</p>
-    <p>Thank you for reaching out! We've received your message:</p>
-    <blockquote>${message}</blockquote>
-    <p>We will contact you soon.</p>
-    <br><p>Best regards,<br>Tech Digital Marketing</p>
-  `,
-  text: `Hi ${name},\n\nThank you for reaching out! We've received your message. We will contact you soon.`,
-});
 
-  return res.redirect('/?success=1');
+    // Send confirmation email using Resend API via fetch
+    await sendEmailResend({
+      to: email,
+      subject: 'Message Received - We Will Contact You Soon',
+      html: `
+        <p>Hi ${name},</p>
+        <p>Thank you for reaching out! We've received your message:</p>
+        <blockquote>${message}</blockquote>
+        <p>We will contact you soon.</p>
+        <br><p>Best regards,<br>Tech Digital Marketing</p>
+      `,
+      text: `Hi ${name},\n\nThank you for reaching out! We've received your message. We will contact you soon.`,
+    });
+
+    return res.redirect('/?success=1');
   } catch (err) {
     console.error('Contact error:', err);
     return res.redirect('/?failed=1');
   }
 });
+
 // Route: Send OTP for Forgot Password
 app.post('/api/send-otp', async (req, res) => {
   const { email } = req.body;
@@ -166,11 +171,12 @@ app.post('/api/send-otp', async (req, res) => {
   req.session.otpEmail = email;
 
   try {
+    // Send OTP email using Resend API via fetch
     await sendEmailResend({
-  to: email,
-  subject: 'Password Reset OTP',
-  text: `Your OTP for password reset is: ${otp}`,
-});
+      to: email,
+      subject: 'Password Reset OTP',
+      text: `Your OTP for password reset is: ${otp}`,
+    });
 
     res.json({ message: 'OTP sent to your email.' });
   } catch (err) {
@@ -178,7 +184,8 @@ app.post('/api/send-otp', async (req, res) => {
     res.status(500).json({ message: 'Failed to send OTP' });
   }
 });
-//otp verification
+
+// OTP verification
 app.post('/api/verify-otp', (req, res) => {
   const { otp, email } = req.body;
   if (
@@ -193,6 +200,8 @@ app.post('/api/verify-otp', (req, res) => {
     return res.json({ success: false });
   }
 });
+
+// Password reset
 app.post('/api/reset-password', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -206,7 +215,8 @@ app.post('/api/reset-password', async (req, res) => {
     res.json({ success: false });
   }
 });
-//profile information from db
+
+// Profile info from DB
 app.get('/api/profile', ensureLoggedIn, async (req, res) => {
   try {
     const result = await pool.query(
@@ -224,9 +234,11 @@ app.get('/api/profile', ensureLoggedIn, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 app.get('/api/isloggedin', (req, res) => {
   res.json({ loggedIn: !!req.session.userId });
 });
+
 // Route: Logout
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
@@ -234,10 +246,12 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
   });
 });
+
 // Route: Chatbot (Protected)
 app.get('/chatbot', ensureLoggedIn, (req, res) => {
   res.sendFile(__dirname + '/public/CTA.html');
 });
+
 // Route: Gemini API Integration
 app.post('/api/chat', ensureLoggedIn, async (req, res) => {
   const userMessage = req.body.message;
@@ -254,10 +268,11 @@ app.post('/api/chat', ensureLoggedIn, async (req, res) => {
     const botReply = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I didn't understand that.";
     res.json({ reply: botReply });
   } catch (err) {
-    console.error("Gemini API Error:", err.response?.data || err.message);
+    console.error('Gemini API Error:', err.response?.data || err.message);
     res.status(500).json({ error: 'Failed to fetch reply from Gemini' });
   }
 });
+
 // Start the server
 app.listen(port, () => {
   console.log(`✅ Server is running at: http://localhost:${port}`);
