@@ -8,6 +8,9 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 const app = express();
 const port = 3000;
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));   
@@ -117,19 +120,19 @@ app.post('/contacts', async (req, res) => {
     // Insert message into DB
     await pool.query('INSERT INTO contact_messages (name, email, message) VALUES ($1, $2, $3)', [name, email, message]);
     // Send confirmation email
-    const mailOptions = {
-      from: '"Commerce & Tech Digital Marketing" <your-email@gmail.com>',
-      to: email,
-      subject: 'Message Received - We Will Contact You Soon',
-      text: `Hi ${name},\n\nThank you for reaching out! ...`,
-       html: `<p>Hi ${name},</p>
-           <p>Thank you for reaching out! We've received your message:</p>
-           <blockquote>${message}</blockquote>
-           <p>We will contact you soon.</p>
-           <br><p>Best regards,<br>Commerce & Tech Digital Marketing</p>`
-    };
-    await transporter.sendMail(mailOptions);
-    return res.redirect('/?success=1');
+    await resend.emails.send({
+    from: 'Tech Digital Marketing <digitalmarketingecommerce662@gmail.com>',
+    to: email,
+    subject: 'Message Received - We Will Contact You Soon',
+    html: `
+      <p>Hi ${name},</p>
+      <p>Thank you for reaching out! We've received your message:</p>
+      <blockquote>${message}</blockquote>
+      <p>We will contact you soon.</p>
+      <br><p>Best regards,<br>Tech Digital Marketing</p>
+    `,
+  });
+  return res.redirect('/?success=1');
   } catch (err) {
     console.error('Contact error:', err);
     return res.redirect('/?failed=1');
@@ -137,23 +140,23 @@ app.post('/contacts', async (req, res) => {
 });
 // Route: Send OTP for Forgot Password
 app.post('/api/send-otp', async (req, res) => {
-    const { email } = req.body;
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    req.session.otp = otp;
-    req.session.otpEmail = email;
-    const mailOptions = {
-        from: 'digitalmarketingecommerce662@gmail.com', // use your sender email here!
-        to: email,
-        subject: 'Password Reset OTP',
-        text: `Your OTP for password reset is: ${otp}`,
-    };
-    try {
-        await transporter.sendMail(mailOptions);
-        res.json({ message: 'OTP sent to your email.' });
-    } catch (err) {
-        console.error('OTP mail error:', err);
-        res.status(500).json({ message: 'Failed to send OTP' });
-    }
+  const { email } = req.body;
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  req.session.otp = otp;
+  req.session.otpEmail = email;
+
+  try {
+    await resend.emails.send({
+      from: 'Tech Digital Marketing <digitalmarketingecommerce662@gmail.com>',
+      to: email,
+      subject: 'Password Reset OTP',
+      text: `Your OTP for password reset is: ${otp}`,
+    });
+    res.json({ message: 'OTP sent to your email.' });
+  } catch (err) {
+    console.error('OTP mail error:', err);
+    res.status(500).json({ message: 'Failed to send OTP' });
+  }
 });
 //otp verification
 app.post('/api/verify-otp', (req, res) => {
