@@ -4,37 +4,32 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const axios = require('axios');
 const session = require('express-session');
-const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
 const port = 3000;
 
-let fetch;
-(async () => {
-  fetch = (await import('node-fetch')).default;
-})();
+// SendGrid setup
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-async function sendEmailResend({ to, subject, html, text }) {
-  if (!fetch) {
-    fetch = (await import('node-fetch')).default;
+async function sendEmailSendGrid({ to, subject, html, text }) {
+  const msg = {
+    to,
+    from: 'digitalmarketingecommerce662@gmail.com', // must be a verified sender in SendGrid
+    subject,
+    text,
+    html,
+  };
+  try {
+    await sgMail.send(msg);
+    console.log('Email sent successfully via SendGrid');
+  } catch (error) {
+    console.error('SendGrid email error:', error);
+    if (error.response) {
+      console.error(error.response.body);
+    }
   }
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: 'digitalmarketingecommerce662@gmail.com',
-      to,
-      subject,
-      html,
-      text,
-    }),
-  });
-  const data = await response.json();
-  return data;
 }
 
 // Middleware
@@ -142,8 +137,8 @@ app.post('/contacts', async (req, res) => {
     // Insert message into DB
     await pool.query('INSERT INTO contact_messages (name, email, message) VALUES ($1, $2, $3)', [name, email, message]);
 
-    // Send confirmation email using Resend API via fetch
-    await sendEmailResend({
+    // Send confirmation email using SendGrid
+    await sendEmailSendGrid({
       to: email,
       subject: 'Message Received - We Will Contact You Soon',
       html: `
@@ -171,8 +166,8 @@ app.post('/api/send-otp', async (req, res) => {
   req.session.otpEmail = email;
 
   try {
-    // Send OTP email using Resend API via fetch
-    await sendEmailResend({
+    // Send OTP email using SendGrid
+    await sendEmailSendGrid({
       to: email,
       subject: 'Password Reset OTP',
       text: `Your OTP for password reset is: ${otp}`,

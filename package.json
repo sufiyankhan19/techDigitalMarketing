@@ -3,6 +3,7 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
+    "@sendgrid/mail": "^8.1.5",
     "axios": "^1.10.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
