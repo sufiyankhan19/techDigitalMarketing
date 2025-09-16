@@ -325,7 +325,7 @@ nav a:focus {
   border-radius: 50px;
   box-shadow: 0 2px 8px rgba(126,87,194,0.07);
   padding: 10px 22px;
-  position: fixed;
+  position: relative;
   top: 18px;
   left: 18px;
   z-index: 1001;
